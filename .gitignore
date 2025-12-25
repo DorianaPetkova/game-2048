@@ -1,5 +1,10 @@
 .vs/ 
 *.sln 
-*.vcxproj 
+*.vcxproj* 
 Debug/ 
 Release/ 
+x64/ 
+*.exe 
+*.obj 
+*.pdb" 
+*.ilk" 
