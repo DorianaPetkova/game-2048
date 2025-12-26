@@ -34,10 +34,38 @@ void ExitGame() {};
 
 void StartFormat();
 
+bool MoveLeft();
+bool MoveRight() { return false; } //opravi go da ne e false posle
+bool MoveUp() { return false; }
+bool MoveDown() { return false; }
+
+bool IsBoardEqual(int board1[10][10], int board2[10][10]);
+void CopyBoard(int source[10][10], int destination[10][10]);
+void CompressRowLeft(int row[10]);
+void PrintBoard();
+
+
 
 int main()
 {
-	mainMenu();
+	//mainMenu();
+
+	N = 4; //NE SI SLAGAI INTA
+	int test[4][4] = {
+		{2, 0, 2, 4},
+		{0, 4, 4, 0},
+		{2, 2, 2, 2},
+		{0, 0, 0, 2}
+	};
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
+			board[i][j] = test[i][j];
+
+	std::cout << "BeforE\n";
+	PrintBoard();
+	MoveLeft();
+	std::cout << "\nAfter\n";
+	PrintBoard();
 
 	return 0;
 }
@@ -99,3 +127,75 @@ void Instructions()
 	std::cout << "Good luck!\n\n";
 	std::cout << "  >> ";
 }
+
+bool IsBoardEqual(int board1[10][10], int board2[10][10])
+{
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (board1[i][j] != board2[i][j]) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void CopyBoard(int source[10][10], int destination[10][10])
+{
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			destination[i][j] = source[i][j];
+		}
+	}
+}
+
+void PrintBoard() {
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			std::cout << board[i][j] << "\t";
+		}
+		std::cout << "\n";
+	}
+}
+
+
+void CompressRowLeft(int row[10])
+{
+	int temp[10] = { 0 };
+	int index = 0;
+	for (int j = 0; j < N; j++) {
+		if (row[j] != 0) {
+			temp[index++] = row[j];
+		}
+	}
+	
+	for (int j = 0; j < N - 1; j++)
+	{
+		if (temp[j] != 0 && temp[j] == temp[j + 1]) {
+		{
+			temp[j] *= 2;
+			temp[j + 1] = 0;
+		}
+	}
+		for (int j = 0; j < N; j++)
+			row[j] = 0;
+		index = 0;
+		for (int j = 0; j < N; j++) {
+			if (temp[j] != 0) {
+				row[index++] = temp[j];
+			}
+		}
+	}
+	
+}
+bool MoveLeft()
+{
+	int oldBoard[10][10];
+	CopyBoard(board, oldBoard);
+	for (int i = 0; i < N; i++) {
+		CompressRowLeft(board[i]);
+	}
+
+	return !IsBoardEqual(board, oldBoard);
+}
+
