@@ -35,9 +35,10 @@ void ExitGame() {};
 void StartFormat();
 
 bool MoveLeft();
-bool MoveRight() { return false; } //opravi go da ne e false posle
-bool MoveUp() { return false; }
-bool MoveDown() { return false; }
+bool MoveRight();
+bool MoveUp();
+bool MoveDown();
+bool ChooseMove(char move);
 
 bool IsBoardEqual(int board1[10][10], int board2[10][10]);
 void CopyBoard(int source[10][10], int destination[10][10]);
@@ -199,3 +200,85 @@ bool MoveLeft()
 	return !IsBoardEqual(board, oldBoard);
 }
 
+bool MoveRight()
+{
+	int oldBoard[10][10];
+	CopyBoard(board, oldBoard);
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N / 2; j++) {
+			int tmp = board[i][j];
+			board[i][j] = board[i][N - 1 - j];
+			board[i][N - 1 - j] = tmp;
+		}
+
+			CompressRowLeft(board[i]);
+
+		for (int j = 0; j < N / 2; j++) {
+			int tmp = board[i][j];
+			board[i][j] = board[i][N - 1 - j];
+			board[i][N - 1 - j] = tmp;
+		}
+	}
+	return !IsBoardEqual(board, oldBoard);
+}
+
+bool MoveUp()
+{
+	int oldBoard[10][10];
+	CopyBoard(board, oldBoard);
+	for (int j = 0; j < N; j++) {
+		int column[10];
+		for (int i = 0; i < N; i++) {
+			column[i] = board[i][j];
+		}
+		CompressRowLeft(column);
+		for (int i = 0; i < N; i++) {
+			board[i][j] = column[i];
+		}
+	}
+	return !IsBoardEqual(board, oldBoard);
+}
+
+bool MoveDown()
+{
+	int oldBoard[10][10];
+	CopyBoard(board, oldBoard);
+	for (int j = 0; j < N; j++) {
+		int column[10];
+		for (int i = 0; i < N; i++) {
+			column[i] = board[i][j];
+		}
+		for (int i = 0; i < N / 2; i++) {
+			int tmp = column[i];
+			column[i] = column[N - 1 - i];
+			column[N - 1 - i] = tmp;
+		}
+		CompressRowLeft(column);
+		for (int i = 0; i < N / 2; i++) {
+			int tmp = column[i];
+			column[i] = column[N - 1 - i];
+			column[N - 1 - i] = tmp;
+		}
+		for (int i = 0; i < N; i++) {
+			board[i][j] = column[i];
+		}
+	}
+	return !IsBoardEqual(board, oldBoard);
+}
+
+bool ChooseMove(char move)
+{
+	switch (move) {
+	case 'a':
+		return MoveLeft();
+	case 'd':
+		return MoveRight();
+	case 'w':
+		return MoveUp();
+	case 's':
+		return MoveDown();
+	default:
+		std::cout << "Invalid move. Please use w/a/s/d keys.\n";
+		return false;
+	}
+}
