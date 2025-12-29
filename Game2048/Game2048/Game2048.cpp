@@ -13,7 +13,6 @@
 *
 */
 
-
 #include <iostream>
 #include <fstream>
 
@@ -28,6 +27,7 @@ char username[101];
 void mainMenu();
 void StartNewGame() {};
 void LoadGame() {};
+void SaveGame() {};
 void Instructions();
 void Leaderboards() {};
 void ExitGame() {};
@@ -45,28 +45,14 @@ void CopyBoard(int source[10][10], int destination[10][10]);
 void CompressRowLeft(int row[10]);
 void PrintBoard();
 
+void GenerateRandomTile();
+void CheckLevelTile() {};
 
 
 int main()
 {
 	//mainMenu();
 
-	N = 4; //NE SI SLAGAI INTA
-	int test[4][4] = {
-		{2, 0, 2, 4},
-		{0, 4, 4, 0},
-		{2, 2, 2, 2},
-		{0, 0, 0, 2}
-	};
-	for (int i = 0; i < N; i++)
-		for (int j = 0; j < N; j++)
-			board[i][j] = test[i][j];
-
-	std::cout << "BeforE\n";
-	PrintBoard();
-	MoveLeft();
-	std::cout << "\nAfter\n";
-	PrintBoard();
 
 	return 0;
 }
@@ -281,4 +267,55 @@ bool ChooseMove(char move)
 		std::cout << "Invalid move. Please use w/a/s/d keys.\n";
 		return false;
 	}
+}
+
+void GenerateRandomTile()
+{
+	srand(time(0));
+
+	int emptyCells[100][2];
+	int emptyCount = 0;
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (board[i][j] == 0) {
+				emptyCells[emptyCount][0] = i;
+				emptyCells[emptyCount][1] = j;
+				emptyCount++;
+			}
+		}
+	}
+	if (emptyCount == 0) {
+		return;
+	}
+
+	int maxTileValue = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (board[i][j] > maxTileValue) {
+				maxTileValue = board[i][j];
+			}
+		}
+
+	}
+	int value;
+	int r = rand() % 100;
+
+	if (maxTileValue >= 512)
+	{
+		if(r<50)
+			value = 4;
+		else if(r<90)
+			value = 2;
+		else value = 8;
+	}
+	else {
+		if (r < 90)
+			value = 2;
+		else
+			value = 4;
+	}
+
+	int pos = rand() % emptyCount;
+	board[emptyCells[pos][0]][emptyCells[pos][1]] = value;
 }
