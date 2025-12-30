@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <ctime>
 
 // Global constants
 
@@ -46,12 +47,47 @@ void CompressRowLeft(int row[10]);
 void PrintBoard();
 
 void GenerateRandomTile();
-void CheckLevelTile() {};
+int CheckLevelTile();
+int FindMaxTileValue();
 
 
 int main()
 {
+	srand(time(0));
 	//mainMenu();
+	N = 4;
+//	int testRow[10] = { 2, 0, 2, 4 };
+//	std::cout << "comp row\n";
+//	for (int i = 0; i < N; i++) 
+//		std::cout << testRow[i] << " ";
+//
+//	CompressRowLeft(testRow);
+//
+//	std::cout << "\n ";
+//	for (int i = 0; i < N; i++) 
+//		std::cout << testRow[i] << " ";
+	
+
+
+	int sampleBoard[4][4] = {
+	{2, 2, 0, 0},
+	{0, 4, 4, 0},
+	{8, 0, 8, 0},
+	{0, 2, 0, 2}
+	};
+	
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+		board[i][j] = sampleBoard[i][j];
+	}
+	}
+
+	std::cout << "Before:\n";
+	PrintBoard();
+	MoveUp();
+	std::cout << "After:\n";
+	PrintBoard();
 
 
 	return 0;
@@ -158,7 +194,7 @@ void CompressRowLeft(int row[10])
 	
 	for (int j = 0; j < N - 1; j++)
 	{
-		if (temp[j] != 0 && temp[j] == temp[j + 1]) {
+		if (temp[j] != 0 && temp[j] == temp[j + 1])
 		{
 			temp[j] *= 2;
 			temp[j + 1] = 0;
@@ -166,13 +202,13 @@ void CompressRowLeft(int row[10])
 	}
 		for (int j = 0; j < N; j++)
 			row[j] = 0;
+
 		index = 0;
 		for (int j = 0; j < N; j++) {
 			if (temp[j] != 0) {
 				row[index++] = temp[j];
 			}
 		}
-	}
 	
 }
 bool MoveLeft()
@@ -269,10 +305,43 @@ bool ChooseMove(char move)
 	}
 }
 
+{
+	int maxTileValue = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (board[i][j] > maxTileValue) {
+				maxTileValue = board[i][j];
+			}
+		}
+	}
+	return maxTileValue;
+}
+int CheckLevelTile()
+{
+	int maxTileValue = FindMaxTileValue(); 
+	int value;
+	int r = rand() % 100;
+
+	if (maxTileValue >= 512)
+	{
+		if (r < 50)
+			value = 4;
+		else if (r < 90)
+			value = 2;
+		else
+			value = 8;
+	}
+	else {
+		if (r < 90)
+			value = 2;
+		else
+			value = 4;
+	}
+	return value;
+}
+
 void GenerateRandomTile()
 {
-	srand(time(0));
-
 	int emptyCells[100][2];
 	int emptyCount = 0;
 
@@ -289,33 +358,7 @@ void GenerateRandomTile()
 		return;
 	}
 
-	int maxTileValue = 0;
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			if (board[i][j] > maxTileValue) {
-				maxTileValue = board[i][j];
-			}
-		}
-
-	}
-	int value;
-	int r = rand() % 100;
-
-	if (maxTileValue >= 512)
-	{
-		if(r<50)
-			value = 4;
-		else if(r<90)
-			value = 2;
-		else value = 8;
-	}
-	else {
-		if (r < 90)
-			value = 2;
-		else
-			value = 4;
-	}
-
+	int value = CheckLevelTile();
 	int pos = rand() % emptyCount;
 	board[emptyCells[pos][0]][emptyCells[pos][1]] = value;
 }
