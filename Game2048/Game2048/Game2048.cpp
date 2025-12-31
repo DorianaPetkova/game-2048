@@ -1,4 +1,4 @@
-/**
+﻿/**
 *
 * Solution to course project #8
 * Introduction to programming course
@@ -26,7 +26,8 @@ char username[101];
 // declaration of functions
 
 void mainMenu();
-void StartNewGame() {};
+void StartNewGame();
+void GameLoop();
 void LoadGame() {};
 void SaveGame() {};
 void Instructions();
@@ -50,46 +51,17 @@ void GenerateRandomTile();
 int CheckLevelTile();
 int FindMaxTileValue();
 
+void PrintHeader();
+void PrintControls();
+bool HandleCommands(char move, int& movesCount);
+void HandleGameOver();
+
 
 int main()
 {
 	srand(time(0));
-	//mainMenu();
+	mainMenu();
 	N = 4;
-//	int testRow[10] = { 2, 0, 2, 4 };
-//	std::cout << "comp row\n";
-//	for (int i = 0; i < N; i++) 
-//		std::cout << testRow[i] << " ";
-//
-//	CompressRowLeft(testRow);
-//
-//	std::cout << "\n ";
-//	for (int i = 0; i < N; i++) 
-//		std::cout << testRow[i] << " ";
-	
-
-
-	int sampleBoard[4][4] = {
-	{2, 2, 0, 0},
-	{0, 4, 4, 0},
-	{8, 0, 8, 0},
-	{0, 2, 0, 2}
-	};
-	
-
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-		board[i][j] = sampleBoard[i][j];
-	}
-	}
-
-	std::cout << "Before:\n";
-	PrintBoard();
-	MoveUp();
-	std::cout << "After:\n";
-	PrintBoard();
-
-
 	return 0;
 }
 
@@ -305,6 +277,7 @@ bool ChooseMove(char move)
 	}
 }
 
+int FindMaxTileValue()
 {
 	int maxTileValue = 0;
 	for (int i = 0; i < N; i++) {
@@ -361,4 +334,150 @@ void GenerateRandomTile()
 	int value = CheckLevelTile();
 	int pos = rand() % emptyCount;
 	board[emptyCells[pos][0]][emptyCells[pos][1]] = value;
+}
+
+void StartNewGame() {
+	std::cout << "Enter username: ";
+	std::cin.getline(username, 101);
+
+	do {
+		std::cout << "Enter board size (4-10): ";
+		std::cin >> N;
+		std::cin.ignore();
+
+		if (N < 4 || N > 10) {
+			std::cout << "Invalid size! Please choose between 4 and 10.\n";
+		}
+	} while (N < 4 || N > 10);
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			board[i][j] = 0;
+		}
+	}
+
+	GenerateRandomTile();
+	GenerateRandomTile();
+	GameLoop();
+}
+
+void PrintHeader()
+{
+	std::cout << "\n\n";
+	std::cout << "=== 2048 GAME ===\n";
+	std::cout << "Player: " << username << "  |  Board: " << N << "x" << N << "\n";
+	std::cout << "===================================\n\n";
+}
+
+void PrintControls()
+{
+	std::cout << "\n===================================\n";
+	std::cout << "Controls:\n";
+	std::cout << "  w = Move Up\n";
+	std::cout << "  a = Move Left\n";
+	std::cout << "  s = Move Down\n";
+	std::cout << "  d = Move Right\n";
+	std::cout << "  v = Save Game\n";
+	std::cout << "  q = Quit to Menu\n";
+	std::cout << "===================================\n";
+	std::cout << "Enter move: ";
+}
+
+bool CheckGameOver() {
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (board[i][j] == 0) {
+				return false;  
+			}
+		}
+	}
+
+	int tempBoard[10][10];
+	CopyBoard(board, tempBoard);
+
+	if (MoveLeft()) {
+		CopyBoard(tempBoard, board);
+		return false;
+	}
+	if (MoveRight()) {
+		CopyBoard(tempBoard, board);
+		return false;
+	}
+	if (MoveUp()) {
+		CopyBoard(tempBoard, board);
+		return false;
+	}
+	if (MoveDown()) {
+		CopyBoard(tempBoard, board);
+		return false;
+	}
+	
+	CopyBoard(tempBoard, board);
+	return true;
+}
+
+void HandleGameOver() {
+	std::cout << "\n GAME OVER! No moves possible.\n";
+	std::cout << "Final Score: " << FindMaxTileValue() << "\n";
+	std::cout << "\nPress Enter to return to main menu...";
+	std::cin.ignore();
+	std::cin.get();
+}
+
+bool HandleCommands(char move, int& movesCount) {
+	//implement quit and save
+
+	if (ChooseMove(move)) {
+		movesCount++;
+		GenerateRandomTile();
+		return false;
+	}
+
+	if (move != 'w' && move != 'a' && move != 's' && move != 'd' &&
+		move != 'W' && move != 'A' && move != 'S' && move != 'D') {
+		std::cout << "\nInvalid input!\n";
+	}
+	std::cout << "Press Enter to continue...";
+	std::cin.get();
+
+	return false;
+}
+
+void GameLoop() {
+	char move;
+	int movesCount = 0;
+	PrintHeader();
+	
+	while (true) {
+		PrintBoard();
+		std::cout << "\n";
+		std::cout << "Max Tile: " << FindMaxTileValue() << "\n";
+		std::cout << "Moves: " << movesCount << "\n";
+
+		bool hasEmptyCell = false;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (board[i][j] == 0) {
+					hasEmptyCell = true;
+					break;
+				}
+			}
+			if (hasEmptyCell) break;
+		}
+
+		if (CheckGameOver()) {
+			HandleGameOver();
+			return;
+		}
+
+		PrintControls();
+		std::cin >> move;
+		std::cin.ignore();  
+
+		if (HandleCommands(move, movesCount)) {
+			return; 
+		}
+
+		std::cout << "\n";
+	}
 }
