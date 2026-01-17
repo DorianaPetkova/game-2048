@@ -1,3 +1,16 @@
+/**
+* Solution to course project #8
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2025/2026
+
+* @author --
+* @idnumber ---
+* @compiler VC
+
+* <Used as header for all game structure related functions>
+*/
+
 #include <iostream>
 #include "../include/GameLogic.h"
 #include "../include/MovingLogic.h"
@@ -39,6 +52,7 @@ void mainMenu()
 		}
 	} while (UserChoice != 5);
 }
+
 int FindMaxTileValue()
 {
 	int maxTileValue = 0;
@@ -169,7 +183,7 @@ void HandleGameOver(int movesCount) {
 }
 
 void GameLoop() {
-	char move;
+    char move;
 	int movesCount = 0;
 	PrintHeader();
 
@@ -178,7 +192,6 @@ void GameLoop() {
 		std::cout << "\nMax Tile: " << FindMaxTileValue()
 			<< "\nMoves: " << movesCount << "\n";
 		if (CheckGameOver()) {
-			std::cout << "\nOut of moves! Better luck next time.\n";
 			HandleGameOver(movesCount);
 			return;
 		}
@@ -188,10 +201,10 @@ void GameLoop() {
 		std::cin.ignore();
 
 		if (HandleCommands(move, movesCount)) {
-			std::cout << "Returning to main menu...\n";
-			std::cin.ignore();
+			std::cout << "Returning to main menu...(press enter)\n";
 			std::cin.get();
-			return; 
+			mainMenu();
+			return;
 		}
 
 		std::cout << "\n";
@@ -199,9 +212,23 @@ void GameLoop() {
 }
 
 bool HandleCommands(char move, int& movesCount) {
+
+	
 	
 	if (move == 'q' || move == 'Q') {
-		return true;
+		char choice;
+		std::cout << "Are you sure you want to quit? (y/n): ";
+		std::cin >> choice;
+		std::cin.ignore();
+
+		if (choice == 'y' || choice == 'Y') {
+			SaveToLeaderboard(movesCount);
+			return true;
+		}
+		else {
+			std::cout << "Continuing game...\n";
+			return false;  
+		}
 	}
 
 	bool moved = ChooseMove(move);
@@ -224,3 +251,4 @@ bool HandleCommands(char move, int& movesCount) {
 
 	return false;
 }
+

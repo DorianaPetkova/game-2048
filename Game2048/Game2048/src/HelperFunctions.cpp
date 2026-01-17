@@ -1,8 +1,19 @@
+/**
+* Solution to course project #8
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2025/2026
+
+* @author --
+* @idnumber ---
+* @compiler VC
+
+* <Used for storing helping functions..that we cant use string for...or stl stuff... >
+*/
+
 #include <iostream>
 #include "../include/GameLogic.h"
 #include "../include/HelperFunctions.h"
-
-
 
 bool IsBoardEqual(int board1[10][10], int board2[10][10])
 {

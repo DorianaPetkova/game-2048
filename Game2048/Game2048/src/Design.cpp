@@ -1,3 +1,16 @@
+/**
+* Solution to course project #8
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2025/2026
+
+* @author --
+* @idnumber ---
+* @compiler VC
+
+* <Used as header for all design related functions>
+*/
+
 #include <iostream>
 #include "../include/GameLogic.h"
 #include "../include/Design.h"

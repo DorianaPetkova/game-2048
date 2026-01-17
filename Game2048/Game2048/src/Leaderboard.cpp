@@ -1,8 +1,23 @@
+/**
+* Solution to course project #8
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2025/2026
+
+* @author --
+* @idnumber ---
+* @compiler VC
+
+* <Used as header for all leaderboard related functions>
+*/
+
+
 #include <iostream>
 #include "../include/Leaderboard.h"
 #include <iostream>
 #include <fstream>
 #include "../include/GameLogic.h"
+#include "../include/HelperFunctions.h"
 
 void SaveToLeaderboard(int movesCount)
 {
@@ -19,75 +34,160 @@ void SaveToLeaderboard(int movesCount)
 		filename[pos] = '\0';
 	}
 	else {
-		filename[0] = '1';
-		filename[1] = '0';
-		filename[2] = 'x';
-		filename[3] = '1';
-		filename[4] = '0';
-		filename[5] = '_';
-		const char text[] = "leaderboard.txt";
-		int pos = 6;
-		for (int i = 0; text[i] != '\0'; i++)
-			filename[pos++] = text[i];
-		filename[pos] = '\0';
+		const char text[] = "10x10_leaderboard.txt";
+		int i = 0;
+		while (text[i] != '\0') {
+			filename[i] = text[i];
+			i++;
+		}
+		filename[i] = '\0';
+	}
+	char names[100][101];
+	int scores[100];
+	int moves[100];
+	int count = 0;
+
+	std::ifstream in(filename);
+	while (in >> names[count] >> scores[count] >> moves[count]) {
+		count++;
+	}
+	in.close();
+
+	int newScore = FindMaxTileValue();
+	bool found = false;
+
+	// 2️⃣ Update if username exists
+	for (int i = 0; i < count; i++) {
+		if (StrCmp(names[i], username) == 0) {
+			if (newScore > scores[i]) {
+				scores[i] = newScore;
+				moves[i] = movesCount;
+			}
+			found = true;
+			break;
+		}
+	}
+	if (!found) {
+		StrCopy(names[count], username);
+		scores[count] = newScore;
+		moves[count] = movesCount;
+		count++;
 	}
 
-
-	std::ofstream file(filename, std::ios::app);
-	if (!file.is_open()) {
-		std::cout << "Error opening leaderboard file!\n";
-		return;
+	std::ofstream out(filename);
+	for (int i = 0; i < count; i++) {
+		out << names[i] << " " << scores[i] << " " << moves[i] << "\n";
 	}
+	out.close();
 
-	file << username << " " << FindMaxTileValue() << " " << movesCount << "\n";
-	file.close();
-	std::cout << "Saved " << username << "'s score!"<< "\n";
+	std::cout << "Saved " << username << "'s score!\n";
+}
+
+int ChooseBoard()
+{
+	std:: cout<<"Please select a board you'd like to see the results for:"
+		<<"\n1. 4x4"
+		<<"\n2. 5x5"
+		<<"\n3. 6x6"
+		<<"\n4. 7x7"
+		<<"\n5. 8x8"
+		<<"\n6. 9x9"
+		<<"\n7. 10x10"
+		<< "\nYour choice(number, not row size): ";
+	int choice;
+	std::cin >> choice;
+	return choice+3;
 }
 
 
 
 void Leaderboards() {
-	std::ifstream file("4x4_leaderboard.txt");
+
+	int boardSize = ChooseBoard();
+	char filename[64];
+
+	if (boardSize < 10) {
+		filename[0] = '0' + boardSize;
+		filename[1] = 'x';
+		filename[2] = '0' + boardSize;
+		filename[3] = '_';
+		const char text[] = "leaderboard.txt";
+		int pos = 4;
+		for (int i = 0; text[i] != '\0'; i++)
+			filename[pos++] = text[i];
+		filename[pos] = '\0';
+	}
+	else {
+		const char text[] = "10x10_leaderboard.txt";
+		int i = 0;
+		while (text[i] != '\0') {
+			filename[i] = text[i];
+			i++;
+		}
+		filename[i] = '\0';
+	}
+
+	std::ifstream file(filename);
 	if (!file.is_open()) {
+		std::cout << "No leaderboard for this board size.\n";
+		std::cout << "Press enter to return to main menu.\n\n";
+		std::cin.ignore();
+		std::cin.get();
+		mainMenu();
 		return;
 	}
 
-	std::cout << "===== LEADERBOARD 4x4 =====\n";
-	std::cout << "Name\tScore\tMoves\n";
-
-
-	char line[256];
+	char names[100][101];
+	int scores[100];
+	int moves[100];
 	int count = 0;
-	while (file.getline(line, 256)) {
-		char name[101];
-		int score = 0, moves = 0;
-		int i = 0, j = 0;
 
-
-		while (line[i] != ' ' && line[i] != '\0' && j < 100) {
-			name[j++] = line[i++];
-		}
-		name[j] = '\0';
-		if (line[i] == ' ') i++;
-		score = 0;
-		while (line[i] >= '0' && line[i] <= '9') {
-			score = score * 10 + (line[i] - '0');
-			i++;
-		}
-		if (line[i] == ' ') i++;
-		moves = 0;
-		while (line[i] >= '0' && line[i] <= '9') {
-			moves = moves * 10 + (line[i] - '0');
-			i++;
-		}
-		std::cout << name << "\t" << score << "\t" << moves << "\n";
-
+	while (file >> names[count] >> scores[count] >> moves[count]) {
 		count++;
-		if (count >= 5) break;
+		if (count >= 100) break;
+	}
+	file.close();
+
+	SortLeaderboard(names, scores, moves, count);
+
+	std::cout << "\n===== LEADERBOARD "
+		<< boardSize << "x" << boardSize << " =====\n";
+	std::cout << "Number\tName\tScore\tMoves\n";
+	int limit = (count < 5) ? count : 5;
+	for (int i = 0; i < limit; i++) {
+		std::cout << (i + 1) << ".\t"
+			<< names[i] << "\t"
+			<< scores[i] << "\t"
+			<< moves[i] << "\n";
 	}
 
-	file.close();
+	std::cout << "\nPress Enter to return to main menu...";
 	std::cin.ignore();
 	std::cin.get();
+
+	mainMenu();
+	
 }
 
+void SortLeaderboard(char names[][101], int scores[], int moves[], int count)
+{
+	for (int i = 0; i < count - 1; i++) {
+		for (int j = i + 1; j < count; j++) {
+
+			bool shouldSwap = false;
+
+			if (scores[j] > scores[i]) {
+				shouldSwap = true;
+			}
+			else if (scores[j] == scores[i] && moves[j] < moves[i]) {
+				shouldSwap = true;
+			}
+
+			if (shouldSwap) {
+				swap(scores[i], scores[j]);
+				swap(moves[i], moves[j]);
+				SwapStr(names[i], names[j]);
+			}
+		}
+	}
+}
