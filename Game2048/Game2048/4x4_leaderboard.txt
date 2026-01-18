@@ -1,7 +1,6 @@
-dori 128 147
+dori 276 127
 test 128 129
-test4 4 2
+test4 372 165
 test1 2048 234
 test2 2048 123
 test3 2 3
-

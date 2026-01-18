@@ -4,11 +4,11 @@
 * Faculty of Mathematics and Informatics of Sofia University
 * Winter semester 2025/2026
 
-* @author --
-* @idnumber ---
+* @author Doriana Petkova
+* @idnumber 0MI0600627
 * @compiler VC
 
-* <Used for storing helping functions..that we cant use string for...or stl stuff... >
+* <Used as header for all helping related functions>
 */
 
 #include <iostream>
@@ -24,6 +24,7 @@ bool IsBoardEqual(int board1[10][10], int board2[10][10])
 			}
 		}
 	}
+
 	return true;
 }
 
@@ -70,6 +71,7 @@ void StrCopy(char dest[], const char src[]) {
 	}
 	dest[i] = '\0';
 }
+
 int StrCmp(char a[], char b[]) {
 	int i = 0;
 	while (a[i] != '\0' && b[i] != '\0') {
@@ -77,6 +79,7 @@ int StrCmp(char a[], char b[]) {
 			return a[i] - b[i];
 		i++;
 	}
+
 	return a[i] - b[i];
 }
 
@@ -91,4 +94,15 @@ void SwapStr(char a[], char b[]) {
 	StrCopy(tmp, a);
 	StrCopy(a, b);
 	StrCopy(b, tmp);
+}
+
+int CalculateScore()
+{
+	int sum = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			sum += board[i][j];
+		}
+	}
+	return sum;
 }

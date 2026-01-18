@@ -4,11 +4,11 @@
 * Faculty of Mathematics and Informatics of Sofia University
 * Winter semester 2025/2026
 
-* @author --
-* @idnumber ---
+* @author Doriana Petkova
+* @idnumber 0MI0600627
 * @compiler VC
 
-* <Used as header for all game structure related functions>
+* <Used as header for in-game related functions>
 */
 
 #include <iostream>
@@ -63,6 +63,7 @@ int FindMaxTileValue()
 			}
 		}
 	}
+
 	return maxTileValue;
 }
 
@@ -87,6 +88,7 @@ int CheckLevelTile()
 		else
 			value = 4;
 	}
+
 	return value;
 }
 
@@ -104,6 +106,7 @@ void GenerateRandomTile()
 			}
 		}
 	}
+
 	if (emptyCount == 0) {
 		return;
 	}
@@ -173,7 +176,7 @@ bool CheckGameOver() {
 
 void HandleGameOver(int movesCount) {
 	std::cout << "\n GAME OVER! No moves possible.\n";
-	std::cout << "Final Score: " << FindMaxTileValue() << "\n";
+	std::cout << "Final Score: " << CalculateScore() << "\n";
 	SaveToLeaderboard(movesCount);
 	std::cout << "\nPress Enter to return to main menu...";
 	std::cin.ignore();
@@ -190,7 +193,8 @@ void GameLoop() {
 	while (true) {
 		PrintBoard();
 		std::cout << "\nMax Tile: " << FindMaxTileValue()
-			<< "\nMoves: " << movesCount << "\n";
+			<< "\nMoves: " << movesCount << "\n"
+			<< "Score: " << CalculateScore() << "\n";
 		if (CheckGameOver()) {
 			HandleGameOver(movesCount);
 			return;
@@ -212,8 +216,6 @@ void GameLoop() {
 }
 
 bool HandleCommands(char move, int& movesCount) {
-
-	
 	
 	if (move == 'q' || move == 'Q') {
 		char choice;
@@ -251,4 +253,3 @@ bool HandleCommands(char move, int& movesCount) {
 
 	return false;
 }
-

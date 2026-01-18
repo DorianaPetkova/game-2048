@@ -4,8 +4,8 @@
 * Faculty of Mathematics and Informatics of Sofia University
 * Winter semester 2025/2026
 
-* @author --
-* @idnumber ---
+* @author Doriana Petkova
+* @idnumber 0MI0600627
 * @compiler VC
 
 * <Used as header for all design related functions>
@@ -58,4 +58,20 @@ void PrintControls()
 	std::cout << "  q = Quit to Menu\n";
 	std::cout << "===================================\n";
 	std::cout << "Enter move: ";
+}
+
+void ShowNoLeaderboardMessage() {
+
+	std::cout << "No leaderboard for this board size.\n";
+	std::cout << "Press Enter to return to main menu.\n";
+	std::cin.ignore();
+	std::cin.get();
+	mainMenu();
+}
+
+void PrintLeaderboardHeader(int boardSize) {
+	std::cout << "\n===== LEADERBOARD "
+		<< boardSize << "x" << boardSize << " =====\n";
+	std::cout << "Number\tName\tScore\tMoves\n";
+
 }

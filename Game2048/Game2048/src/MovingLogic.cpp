@@ -4,20 +4,17 @@
 * Faculty of Mathematics and Informatics of Sofia University
 * Winter semester 2025/2026
 
-* @author --
-* @idnumber ---
+* @author Doriana Petkova
+* @idnumber 0MI0600627
 * @compiler VC
 
 * <Used as header for all moving related functions>
 */
 
-
-
 #include <iostream>
 #include "../include/GameLogic.h"
 #include "../include/MovingLogic.h"
 #include "../include/HelperFunctions.h"
-
 
 void CompressRowLeft(int row[10])
 {
@@ -27,7 +24,6 @@ void CompressRowLeft(int row[10])
 	for (int i = 0; i < N; i++) {
 		if (row[i] == 0)
 			continue;
-
 		if (result[write] == 0) {
 			result[write] = row[i];
 		}
@@ -40,7 +36,6 @@ void CompressRowLeft(int row[10])
 			result[write] = row[i];
 		}
 	}
-
 	for (int i = 0; i < N; i++)
 		row[i] = result[i];
 }
@@ -49,6 +44,7 @@ bool MoveLeft()
 {
 	int oldBoard[10][10];
 	CopyBoard(board, oldBoard);
+
 	for (int i = 0; i < N; i++) {
 		CompressRowLeft(board[i]);
 	}
@@ -67,6 +63,7 @@ bool MoveRight()
 		CompressRowLeft(board[i]);
 		ReverseRow(board[i]);
 	}
+
 	return !IsBoardEqual(board, oldBoard);
 }
 
@@ -74,16 +71,20 @@ bool MoveUp()
 {
 	int oldBoard[10][10];
 	CopyBoard(board, oldBoard);
+
 	for (int j = 0; j < N; j++) {
 		int column[10];
+
 		for (int i = 0; i < N; i++) {
 			column[i] = board[i][j];
 		}
 		CompressRowLeft(column);
+
 		for (int i = 0; i < N; i++) {
 			board[i][j] = column[i];
 		}
 	}
+
 	return !IsBoardEqual(board, oldBoard);
 }
 
@@ -105,6 +106,7 @@ bool MoveDown()
 		for (int i = 0; i < N; i++)
 			board[i][j] = column[i];
 	}
+
 	return !IsBoardEqual(board, oldBoard);
 }
 

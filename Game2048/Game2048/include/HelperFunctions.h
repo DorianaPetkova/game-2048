@@ -12,5 +12,6 @@ void StrCopy(char dest[], const char src[]);
 int StrCmp(char a[], char b[]);
 void swap(int& first, int& second);
 void SwapStr(char a[], char b[]);
+int CalculateScore();
 
 #endif

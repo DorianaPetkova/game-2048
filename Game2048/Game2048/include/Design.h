@@ -6,4 +6,7 @@ void Instructions();
 void PrintHeader();
 void PrintControls();
 
+void ShowNoLeaderboardMessage();
+void PrintLeaderboardHeader(int boardSize);
+
 #endif

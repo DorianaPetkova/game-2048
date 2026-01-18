@@ -9,7 +9,6 @@ void mainMenu();
 void StartNewGame();
 void GameLoop();
 
-
 void GenerateRandomTile();
 int CheckLevelTile();
 int FindMaxTileValue();
